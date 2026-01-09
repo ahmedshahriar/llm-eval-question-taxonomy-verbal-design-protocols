@@ -1,0 +1,12 @@
+provider: openai
+models:
+  gpt-4.1-2025-04-14:
+    params:
+      service_tier: default
+      temperature: 0.0
+      prompt_cache_key: eris-question-taxonomy-v1
+      prompt_cache_retention: 24h
+    pricing:
+      input_per_1m: 2.0
+      cached_input_per_1m: 0.5
+      output_per_1m: 8.0
