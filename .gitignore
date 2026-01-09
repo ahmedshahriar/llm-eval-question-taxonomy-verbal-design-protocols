@@ -355,3 +355,6 @@ fabric.properties
 
 # LSP config files
 pyrightconfig.json
+
+# eval jobs
+.jbeval
