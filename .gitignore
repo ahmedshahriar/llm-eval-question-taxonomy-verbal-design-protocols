@@ -358,3 +358,6 @@ pyrightconfig.json
 
 # eval jobs
 .jbeval
+
+outputs
+backups
