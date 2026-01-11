@@ -38,7 +38,7 @@ test_subcategory_col: A-Specific Type of Questions
 # stat configuration
 stats:
   seed: 42
-  n_boot: 1000
+  n_boot: 10000
   alpha: 0.05
   labels_order:
     - LLQ
