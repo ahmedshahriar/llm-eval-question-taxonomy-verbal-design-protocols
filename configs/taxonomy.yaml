@@ -1,0 +1,69 @@
+canonical_subcategories:
+  # LLQ
+  - Verification
+  - Disjunctive
+  - Definition
+  - Example
+  - Feature Specification
+  - Concept Completion
+  - Quantification
+  - Comparison
+  - Judgmental
+  # DRQ
+  - Interpretation
+  - Rationale/Function/Goal Orientation
+  - Causal Antecedent
+  - Causal Consequent
+  - Expectational
+  - Instrumental/Procedural
+  - Enablement # exists in both DRQ and GDQ labels
+  # GDQ
+  - Proposal/Negotiation
+  - Method Generation
+  - Scenario Creation
+  - Ideation
+
+aliases:
+  # Common lower-case forms / partials mapping to canonical
+  instrumental: Instrumental/Procedural
+  procedural: Instrumental/Procedural
+  instrumental/procedural: Instrumental/Procedural
+  "instrumental / procedural": Instrumental/Procedural
+
+  rationale: Rationale/Function/Goal Orientation
+  "goal orientation/rationale": Rationale/Function/Goal Orientation
+  "goal orientation / rationale": Rationale/Function/Goal Orientation
+
+  proposal: Proposal/Negotiation
+  negotiation: Proposal/Negotiation
+  proposal/negotiation: Proposal/Negotiation
+  "proposal / negotiation": Proposal/Negotiation
+
+  "enablement (DRQ)": Enablement
+  "enablement (GDQ)": Enablement
+
+ordering:
+  LLQ:
+    - Verification
+    - Disjunctive
+    - Definition
+    - Example
+    - Feature Specification
+    - Concept Completion
+    - Quantification
+    - Comparison
+    - Judgmental
+  DRQ:
+    - Interpretation
+    - Rationale/Function/Goal Orientation
+    - Causal Antecedent
+    - Causal Consequent
+    - Expectational
+    - Instrumental/Procedural
+    - Enablement
+  GDQ:
+    - Proposal/Negotiation
+    - Enablement
+    - Method Generation
+    - Scenario Creation
+    - Ideation

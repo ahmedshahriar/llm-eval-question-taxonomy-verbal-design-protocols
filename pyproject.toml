@@ -1,0 +1,55 @@
+[project]
+name = "llm-eval-question-taxonomy-verbal-design-protocols"
+version = "0.1.0"
+description = "Official code repository for the paper 'Evaluating the Performance of Large Language Models in Taxonomic Classification of Questions in Verbal Protocols of Design'."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Ahmed Shahriar Sakib", email = "ahmed.shahriar.sakib@gmail.com"},
+]
+keywords = ["llm", "evaluation", "taxonomy", "verbal-protocols", "design-research"]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "anthropic>=0.75.0",
+    "litellm[proxy]>=1.80.7",
+    "openai>=2.9.0",
+    "openpyxl>=3.1.5",
+    "opik>=1.9.40",
+    "pandas>=2.3.3",
+    "python-dotenv>=1.2.1",
+    "scikit-learn>=1.7.2",
+    "statsmodels>=0.14.6",
+]
+
+[dependency-groups]
+dev = [
+    "pandas-stubs>=2.3.3.251219",
+    "pytest>=9.0.2",
+    "ruff>=0.14.11",
+    "ty>=0.0.11",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ty.rules]
+possibly-unresolved-reference = "warn"
+division-by-zero = "ignore"

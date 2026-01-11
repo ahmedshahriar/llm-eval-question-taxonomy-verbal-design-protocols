@@ -1,0 +1,46 @@
+provider: openai
+model: gpt-4.1-2025-04-14
+
+data_dir: dataset
+providers_dir: configs/providers
+
+# input files
+icl_demo_file: convo-qs-eris-labelled-train.xlsx
+test_file: convo-qs-eris-test.xlsx
+
+taxonomy_file: configs/taxonomy.yaml
+
+# how many datapoints to be labeled in one batch
+batch_size: 20
+
+# where to find the prompts
+prompts_root: prompts
+prompts_register_in_opik: true
+
+# labeling settings
+label_subcategories: true
+include_icl_demo: true
+include_subcategory_in_icl_demo: true
+
+# Column mapping (ICL and test may come from different datasets)
+# test set question column
+group_col: Team
+
+# customize column names here
+icl_demo_question_col: Questions
+icl_demo_category_col: A-General Type of Questions
+icl_demo_subcategory_col: A-Specific Type of Questions
+
+test_question_col: Questions
+test_category_col: A-General Type of Questions
+test_subcategory_col: A-Specific Type of Questions
+
+# stat configuration
+stats:
+  seed: 42
+  n_boot: 1000
+  alpha: 0.05
+  labels_order:
+    - LLQ
+    - DRQ
+    - GDQ
