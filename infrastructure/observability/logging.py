@@ -126,7 +126,6 @@ def configure_logging(
     ch.addFilter(ctx_filter)
     root.addHandler(ch)
 
-
     # File handler (detailed, DEBUG+, with rotation)
     if log_file is not None:
         log_file.parent.mkdir(parents=True, exist_ok=True)
@@ -140,7 +139,6 @@ def configure_logging(
         fh.setFormatter(file_formatter)
         fh.addFilter(ctx_filter)
         root.addHandler(fh)
-
 
     # Third-party library log levels
     # Reduce noise from HTTP libraries
