@@ -1,6 +1,6 @@
 # LLM Evaluation: Question Taxonomy Classification
 
-This codebase provides a modular and configurable pipeline to evaluate large language models (LLMs) on the task of classifying questions from verbal design protocols according to the [Eris (2004) taxonomy](http://dx.doi.org/10.1007/978-1-4419-8943-7). The pipeline is designed for easy customization of prompts, models, and datasets, and includes integration with Opik for experiment tracking. 
+This codebase provides a modular and configurable pipeline to evaluate large language models (LLMs) on the task of classifying questions from verbal design protocols according to the [Eris (2004) taxonomy](http://dx.doi.org/10.1007/978-1-4419-8943-7). The pipeline is designed for easy customization of prompts, models, and datasets, and includes integration with Opik for experiment tracking.
 
 ## Project Structure
 
@@ -10,20 +10,20 @@ Directory overview:
 .
 ├─ main.py                          # CLI entrypoint. Loads config, runs application pipeline.
 ├─ pyproject.toml                   # Dependencies and project metadata
-├─ configs/                         
+├─ configs/
 │  ├─ experiment.yaml               # Primary run configuration (model, prompts, data, etc.)
 │  ├─ taxonomy.yaml                 # Eris’ taxonomy definition (labels, hierarchy)
 │  └─ providers/                    # Provider-specific model configs (params and pricing)
 │     └─ <provider>.yaml            # One file per provider (e.g., openai/anthropic/bedrock/ollama...)
 ├─ prompts/                         # Prompt templates (by provider and role)
 │  └─ <provider>/                   # One folder per provider (prompt variants)
-│     ├─ system/                    
+│     ├─ system/
 │     │  └─ *.txt                   # System prompt files
-│     └─ user/                          
+│     └─ user/
 │        └─ *.txt                   # User prompt files
 ├─ dataset/                         # Datasets
 │  └─ ...
-├─ outputs/                         # Run outputs (created at runtime) 
+├─ outputs/                         # Run outputs (created at runtime)
 │  └─ <run_id>/
 │     ├─ run.log
 │     ...
@@ -34,7 +34,7 @@ Directory overview:
 │  ├─ prompting/                    # Prompt manager (opik/offline)
 │  ├─ io/                           # Dataset/artifact I/O
 │  ├─ observability/                # Configure logging
-│  ├─ providers/                    # Provider adapter implementations and factory 
+│  ├─ providers/                    # Provider adapter implementations and factory
 ```
 
 ## Quick Start
@@ -77,7 +77,7 @@ OPIK_PROJECT_NAME=your-project-name
 ```
 
 2. Configure the experiment run in `configs/experiment.yaml`.
-3. Modify prompt templates in `prompts/<provider>/system/` and `prompts/<provider>/user/` as needed. 
+3. Modify prompt templates in `prompts/<provider>/system/` and `prompts/<provider>/user/` as needed.
 4. Place your dataset files in the `dataset/` directory. A sample dataset is provided.
 
 ### Running the Pipeline
