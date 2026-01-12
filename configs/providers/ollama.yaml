@@ -1,0 +1,20 @@
+provider: ollama
+models:
+  qwen3:8b:
+    params:
+      base_url: "http://localhost:11434"
+      temperature: 0
+      seed: 42
+      num_ctx: 8192 # context length, ollama default is 4096, max is 32768
+      think: false
+      keep_alive: "10m"
+    pricing: {}
+  olmo-3:
+    params:
+      base_url: "http://localhost:11434"
+      temperature: 0
+      seed: 42
+      num_ctx: 8192
+      think: false
+      keep_alive: "10m"
+    pricing: {}
