@@ -95,7 +95,7 @@ class PromptManager:
     def __init__(self, prompts_root: Path):
         self.prompts_root = prompts_root
         self.client = opik.Opik()
-        self._cache: dict[tuple[str, str, str, bool], PromptObj] = {}
+        self._cache: dict[tuple[str, str, str, int, bool], PromptObj] = {}
 
     def _get_prompt_path(
         self,
@@ -166,8 +166,16 @@ class PromptManager:
 
         prompt_path = self._get_prompt_path(provider, role, cfg, override_path)
         ensure_exists(prompt_path, f"{provider.value}:{role.value}-prompt")
+        mtime_ns = prompt_path.stat().st_mtime_ns
 
-        cache_key = (provider.value, role.value, str(prompt_path), cfg.prompts_register_in_opik)
+        cache_key = (
+            provider.value,
+            role.value,
+            str(prompt_path),
+            mtime_ns,
+            cfg.prompts_register_in_opik,
+        )
+
         if cache_key in self._cache:
             return self._cache[cache_key]
 
