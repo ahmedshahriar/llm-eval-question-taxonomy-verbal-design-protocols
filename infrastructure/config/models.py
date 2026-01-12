@@ -15,6 +15,7 @@ class Provider(str, Enum):
 
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
+    OLLAMA = "ollama"
 
 
 class DataColumnsConfig(BaseModel):
@@ -50,6 +51,26 @@ class AnthropicConfig(BaseModel):
     cache_ttl: str | None = None
 
 
+class OllamaConfig(BaseModel):
+    # Where Ollama is running (default local)
+    base_url: str
+
+    # Generation controls (all optional; become entries in Ollama "options")
+    temperature: int | float | None = 0
+    seed: int | None = None
+    num_ctx: int | None = None
+    top_p: float | None = None
+    top_k: int | None = None
+    num_predict: int | None = None
+
+    # Ollama top-level request fields
+    keep_alive: str | int | None = None  # e.g., "10m" or 0
+    think: bool | str | None = None  # e.g., False; or "low"/"medium"/"high" if supported
+
+    # Client timeout (seconds)
+    timeout_s: float = 300.0
+
+
 class StatsConfig(BaseModel):
     """
     Configuration for evaluation statistics.
@@ -58,7 +79,7 @@ class StatsConfig(BaseModel):
     """
 
     seed: int = 42
-    n_boot: int = 2000
+    n_boot: int = 100
     alpha: float = 0.05
     labels_order: list[str] = Field(default_factory=lambda: ["LLQ", "DRQ", "GDQ"])
 
@@ -171,6 +192,7 @@ class RunConfig(BaseModel):
     # Provider config (resolved by loader)
     openai: OpenAIConfig | None = None
     anthropic: AnthropicConfig | None = None
+    ollama: OllamaConfig | None = None
     # FUTURE: Add Google provider support (requires GoogleConfig model + adapter implementation)
 
     # Stats
