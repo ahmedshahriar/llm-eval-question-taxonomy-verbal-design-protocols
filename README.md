@@ -1,6 +1,6 @@
 # LLM Evaluation: Question Taxonomy Classification
 
-This codebase provides a modular and configurable pipeline to evaluate large language models (LLMs) on the task of classifying questions from verbal design protocols according to the [Eris (2004) taxonomy](http://dx.doi.org/10.1007/978-1-4419-8943-7). The pipeline is designed for easy customization of prompts, models, and datasets, and includes integration with Opik for experiment tracking.
+This codebase provides a modular and configurable pipeline to evaluate large language models (LLMs) on the task of classifying questions from verbal design protocols according to the [Eris (2004) taxonomy](http://dx.doi.org/10.1007/978-1-4419-8943-7). The pipeline is designed for easy customization of prompts, models, and datasets, and includes integration with [**Opik**](https://github.com/comet-ml/opik) for experiment tracking.
 
 ## Project Structure
 
@@ -30,11 +30,11 @@ Directory overview:
 ├─ application/                     # Orchestration layer (batching, inference, evaluation, serialization)
 ├─ domain/                          # Schemas, taxonomy, evaluation logic
 ├─ infrastructure/                  # External integrations (I/O, providers, logging)
-│  ├─ config/                       # Config models, Provider-param model registry
+│  ├─ config/                       # Config models and provider parameter registry
 │  ├─ prompting/                    # Prompt manager (opik/offline)
 │  ├─ io/                           # Dataset/artifact I/O
-│  ├─ observability/                # Configure logging
-│  ├─ providers/                    # Provider adapter implementations and factory
+│  ├─ observability/                # Logging configuration
+│  ├─ providers/                    # Provider adapters and factory
 ```
 
 ## Quick Start
@@ -42,7 +42,7 @@ Directory overview:
 ### Prerequisites
 
 - **Python ≥3.11**
-- **[uv](https://docs.astral.sh/uv/)** package manager (recommended) or use `pip`/`venv`.
+- **[uv](https://docs.astral.sh/uv/)** package manager (recommended) or use `pip` + `venv`.
 
 ### Installation
 
@@ -61,7 +61,7 @@ uv sync
 1. Create a `.env` file. An example is provided in `.env.example`:
 
 ```bash
-cp .env.example .env # The file must be at your repository's root!
+cp .env.example .env  # Must be at the repository root
 ```
 
 Edit `.env` and add your API keys:
@@ -114,7 +114,7 @@ outputs/<run_id>/
 │  └─ ...
 ├─ predictions.json                  # All predictions with ground truth
 ├─ metrics.json                      # Evaluation metrics, token usage
-├─ subcategory_alignment.csv         # Per-subcategory alignment breakdown
+├─ sub-category_alignment_table.csv  # Per-sub-category alignment breakdown
 └─ run.log                           # Detailed execution log
 ```
 
@@ -146,7 +146,7 @@ models:
     params:
       service_tier: "default"
       temperature: 0.0
-      prompt_cache_key: <prompt-cache-key>
+      prompt_cache_key: "<your-prompt-cache-key>"
       prompt_cache_retention: "1h"
     pricing:
       input_per_1m: 2.50
@@ -155,7 +155,39 @@ models:
 ```
 
 > [!IMPORTANT]
-> **Prompt-caching cost note:** OpenAI/Anthropic return cache-specific token counts (e.g., OpenAI `usage.prompt_tokens_details.cached_tokens`), but Opik’s cost tracking is an **estimate** and isn’t documented as cache-discount–aware (and may be `None` for unsupported models). This repo computes costs manually using `configs/providers/<provider>.yaml` (and logs the final `total_cost` to Opik).
+> **Prompt-caching cost note:** OpenAI/Anthropic return cache-specific token counts (e.g., OpenAI `usage.prompt_tokens_details.cached_tokens`), but Opik’s cost tracking is an **estimate** and isn’t documented as cache-discount aware (and may be `None` for unsupported models). This repo computes costs manually using `configs/providers/<provider>.yaml` and logs to Opik.
+
+#### Ollama (local)
+
+To run locally with Ollama, add a provider config at `configs/providers/ollama.yaml` and set your run to use it.
+
+1) Start Ollama and pull a model (example):
+```bash
+ollama serve
+ollama pull qwen3:8b
+```
+
+2) Configure Ollama in `configs/providers/ollama.yaml` (example):
+```yaml
+provider: ollama
+models:
+  qwen3:8b:
+    params:
+      base_url: "http://localhost:11434"
+      temperature: 0
+      seed: 42
+      num_ctx: 8192  # Context length. Ollama default: 4096; max: 32768
+      think: false
+      keep_alive: "10m"
+    pricing: {}
+```
+
+3) Select it in `configs/experiment.yaml`:
+
+```yaml
+provider: ollama
+model: qwen3:8b
+```
 
 ### Experiment Tracking with Opik
 
@@ -176,10 +208,10 @@ prompts_register_in_opik: false
 
 ### Batch Processing
 
-Adjust batch size based on context window and cost considerations:
+Adjust batch size based on context window and cost considerations in `experiment.yaml`:
 
 ```yaml
-batch_size: 20    # Process 20 questions per API call
+batch_size: 20  # Process 20 questions per API call
 # batch_size: null  # Process all questions in a single call
 ```
 
@@ -213,6 +245,22 @@ register_adapter(Provider.MY_PROVIDER, MyProviderAdapter)
 2. Add config model in `infrastructure/config/models.py`
 3. Create provider YAML in `configs/providers/my-provider.yaml`
 4. Add prompts in `prompts/my-provider/`
+
+#### Scaffold prompt folders for a new provider
+
+Create a new provider prompt bundle by copying an existing provider:
+
+```bash
+# Create prompts/<provider-name>/ with the same structure as prompts/openai/
+uv run python tools/scaffold_prompts.py --provider <provider-name> --from openai
+```
+
+Or create the required folder structure with stub files:
+
+```bash
+# Create empty prompts/<provider-name>/ structure
+uv run python  tools/scaffold_prompts.py --provider <provider-name> --empty
+```
 
 ### Pre-commit
 
