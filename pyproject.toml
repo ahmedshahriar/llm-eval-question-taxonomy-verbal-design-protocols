@@ -37,12 +37,17 @@ dev = [
     "ty>=0.0.11",
 ]
 
+[project.urls]
+Homepage = "https://github.com/ahmedshahriar/llm-eval-question-taxonomy-verbal-design-protocols"
+CI = "https://github.com/ahmedshahriar/llm-eval-question-taxonomy-verbal-design-protocols/actions"
+
 [tool.uv]
 package = false
 
 [tool.ruff]
 line-length = 120
-target-version = "py311"
+force-exclude = true
+extend-exclude = ["outputs", "dataset"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
@@ -51,6 +56,16 @@ ignore = ["E501"]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
+[tool.ty]
+[tool.ty.src]
+include = ["application", "domain", "infrastructure", "tests", "main.py"]
+exclude = ["outputs", "dataset"]
+
 [tool.ty.rules]
 possibly-unresolved-reference = "warn"
 division-by-zero = "ignore"
+
+[tool.pytest]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = ["-q"]

@@ -52,6 +52,7 @@ git clone <repo-url>
 cd llm-eval-question-taxonomy-verbal-design-protocols
 
 # Install dependencies (requires Python >=3.11)
+# includes dev group by default
 uv sync
 ```
 
@@ -98,25 +99,91 @@ python main.py --console-level DEBUG --file-level DEBUG
 
 ### Understanding the Output
 
-After a successful run, outputs are saved to `outputs/<run_id>/`:
+After a successful run, artifacts are saved to `outputs/<run_id>/` (filenames may vary by configuration, but the structure is consistent):
 
 ```
 outputs/<run_id>/
-├─ <config_snapshot>.json              # Exact configuration used
-├─ <data_fingerprint>.json             # Dataset metadata (rows, columns)
+├─ config_snapshot.json              # Exact configuration used
+├─ data_fingerprint.json             # Dataset metadata (rows, columns)
 ├─ prompts/
-│  ├─ system.txt                       # System prompt used
-│  ├─ user.txt                         # User prompt used
-│  └─ <prompt_metadata>.json           # Prompt versioning info (Opik)
+│  ├─ system.txt                     # System prompt used
+│  ├─ user.txt                       # User prompt used
+│  └─ prompt_metadata.json           # Prompt versioning info (Opik)
 ├─ batches/
-│  ├─ batch_001_raw.json               # Raw API responses per batch
+│  ├─ batch_001_raw.json             # Raw API responses per batch
 │  └─ ...
-├─ <predictions>.json                  # All predictions with ground truth
-├─ <metrics>.json                      # Evaluation metrics, token usage
-├─ <subcategory_alignment>.csv         # Per-subcategory alignment breakdown
-└─ run.log                             # Detailed execution log
+├─ predictions.json                  # All predictions with ground truth
+├─ metrics.json                      # Evaluation metrics, token usage
+├─ subcategory_alignment.csv         # Per-subcategory alignment breakdown
+└─ run.log                           # Detailed execution log
 ```
 
+## Usage
+
+### Custom Prompts
+
+Prompts are organized by provider and role. To customize:
+
+1. Navigate to `prompts/<provider>/`
+2. Edit system prompts in `system/<category|sub-category>/`
+3. Edit user prompts in `user/label/<category|sub-category>/icl-demo/<none|category|sub-category>/`
+
+Or specify custom prompt paths in `experiment.yaml`:
+
+```yaml
+system_prompt_path: prompts/openai/system/my-custom-system.txt
+user_prompt_path: prompts/openai/user/my-custom-user.txt
+```
+
+### Provider Configuration
+
+Edit `configs/providers/<provider>.yaml` to add models or adjust pricing:
+
+```yaml
+provider: openai
+models:
+  gpt-4.1-2025-04-14:
+    params:
+      service_tier: "default"
+      temperature: 0.0
+      prompt_cache_key: <prompt-cache-key>
+      prompt_cache_retention: "1h"
+    pricing:
+      input_per_1m: 2.50
+      cached_input_per_1m: 1.25
+      output_per_1m: 10.00
+```
+
+> [!IMPORTANT]
+> **Prompt-caching cost note:** OpenAI/Anthropic return cache-specific token counts (e.g., OpenAI `usage.prompt_tokens_details.cached_tokens`), but Opik’s cost tracking is an **estimate** and isn’t documented as cache-discount–aware (and may be `None` for unsupported models). This repo computes costs manually using `configs/providers/<provider>.yaml` (and logs the final `total_cost` to Opik).
+
+### Experiment Tracking with Opik
+
+The pipeline automatically logs:
+- Prompts (with versioning)
+- Token usage per batch
+- Costs (input/output/total)
+- Evaluation metrics
+
+View traces at [app.comet.com/opik](https://www.comet.com/site/products/opik/)
+
+To disable prompt registration in Opik (e.g., for local testing), set the following in `experiment.yaml`:
+
+```yaml
+# experiment.yaml
+prompts_register_in_opik: false
+```
+
+### Batch Processing
+
+Adjust batch size based on context window and cost considerations:
+
+```yaml
+batch_size: 20    # Process 20 questions per API call
+# batch_size: null  # Process all questions in a single call
+```
+
+Smaller batches = more API calls but better error recovery.
 
 ## Development
 
@@ -146,6 +213,55 @@ register_adapter(Provider.MY_PROVIDER, MyProviderAdapter)
 2. Add config model in `infrastructure/config/models.py`
 3. Create provider YAML in `configs/providers/my-provider.yaml`
 4. Add prompts in `prompts/my-provider/`
+
+### Pre-commit
+
+Install hooks (one-time per clone):
+
+```bash
+uv sync
+uv run pre-commit install
+```
+
+Run all hooks manually:
+
+```bash
+uv run pre-commit run --all-files
+```
+
+### Running Tests
+
+```bash
+# Install dependencies (includes dev group by default)
+uv sync
+
+# Run the test suite
+pytest
+
+# Run specific test
+pytest tests/unit/test_anthropic_cache_math.py
+```
+
+### Code Quality
+
+```bash
+# Full quality gate (recommended)
+uv run pre-commit run --all-files
+
+# Or run tools individually:
+
+# Lint (and auto-fix where possible)
+ruff check . --fix
+
+# Format
+ruff format .
+
+# Static type checking
+ty check
+```
+
+## Reference
+- Eris, Ö. (2004). *Effective Inquiry for Innovative Engineering Design*. Springer. [DOI](https://doi.org/10.1007/978-1-4419-8943-7)
 
 ## License
 This repository is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
