@@ -1,5 +1,8 @@
-provider: openai
-model: gpt-4.1-2025-04-14
+# Experiment configuration file
+# Specify dataset paths, model settings, labeling options, and statistics parameters.
+
+provider: openai # which provider to use, must match one in configs/providers/
+model: gpt-4.1-2025-04-14 # which model to use, must match one in the chosen provider
 
 data_dir: dataset
 providers_dir: configs/providers
@@ -11,7 +14,7 @@ test_file: convo-qs-eris-test.xlsx
 taxonomy_file: configs/taxonomy.yaml
 
 # how many datapoints to be labeled in one batch
-batch_size: 20
+batch_size: 50
 
 # where to find the prompts
 prompts_root: prompts
@@ -22,15 +25,16 @@ label_subcategories: true
 include_icl_demo: true
 include_subcategory_in_icl_demo: true
 
-# Column mapping (ICL and test may come from different datasets)
-# test set question column
+# test set meeting group column (Run by a specific team's meeting, e.g., Team A, Team B, etc.)
 group_col: Team
 
-# customize column names here
+# Column mapping (ICL demo and test may come from different datasets)
+# ICL demo set column names
 icl_demo_question_col: Questions
 icl_demo_category_col: A-General Type of Questions
 icl_demo_subcategory_col: A-Specific Type of Questions
 
+# test set column names
 test_question_col: Questions
 test_category_col: A-General Type of Questions
 test_subcategory_col: A-Specific Type of Questions
@@ -40,6 +44,7 @@ stats:
   seed: 42
   n_boot: 10000
   alpha: 0.05
+  # display order of labels in the stats report
   labels_order:
     - LLQ
     - DRQ

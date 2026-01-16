@@ -79,7 +79,7 @@ class StatsConfig(BaseModel):
     """
 
     seed: int = 42
-    n_boot: int = 100
+    n_boot: int = 10_000
     alpha: float = 0.05
     labels_order: list[str] = Field(default_factory=lambda: ["LLQ", "DRQ", "GDQ"])
 

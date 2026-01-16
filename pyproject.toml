@@ -69,3 +69,9 @@ division-by-zero = "ignore"
 minversion = "9.0"
 testpaths = ["tests"]
 addopts = ["-q"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning:botocore.*",
+    "ignore::UserWarning:botocore.*",
+]

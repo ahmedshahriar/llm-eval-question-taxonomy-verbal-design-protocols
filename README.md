@@ -48,7 +48,7 @@ Directory overview:
 
 ```bash
 # Clone repository
-git clone <repo-url>
+git clone git@github.com:ahmedshahriar/llm-eval-question-taxonomy-verbal-design-protocols.git
 cd llm-eval-question-taxonomy-verbal-design-protocols
 
 # Install dependencies (requires Python >=3.11)
@@ -137,7 +137,9 @@ user_prompt_path: prompts/openai/user/my-custom-user.txt
 
 ### Provider Configuration
 
-Edit `configs/providers/<provider>.yaml` to add models or adjust pricing:
+Edit `configs/providers/<provider>.yaml` to add models or adjust pricing, for example:
+
+#### OpenAI with Prompt-Caching
 
 ```yaml
 provider: openai
@@ -211,7 +213,7 @@ prompts_register_in_opik: false
 Adjust batch size based on context window and cost considerations in `experiment.yaml`:
 
 ```yaml
-batch_size: 20  # Process 20 questions per API call
+batch_size: 50  # Process 50 questions per API call
 # batch_size: null  # Process all questions in a single call
 ```
 
@@ -236,9 +238,11 @@ from infrastructure.config.models import Provider
 from infrastructure.providers.base import ProviderAdapter
 from infrastructure.providers.registry import register_adapter
 
+# Implement the provider adapter
 class MyProviderAdapter(ProviderAdapter):
    def call_batch(self, *args): ...
 
+# Register the adapter
 register_adapter(Provider.MY_PROVIDER, MyProviderAdapter)
 ```
 
